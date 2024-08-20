@@ -1,2 +1,2 @@
-# blend_seq_paper
+# Blend-Seq Paper
 A repository to hold code used for the Blend Seq paper
