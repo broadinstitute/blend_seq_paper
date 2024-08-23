@@ -25,9 +25,9 @@ public class TrivialCaller {
     private static String CHROMOSOMES_DIR;
     private static String currentChromosome;  // ID
     private static StringBuilder sb;  // Sequence
-
-
-	/**
+    
+    
+    /**
      * Remark: the program prints the calls to STDOUT.
      *
      * @param args 
@@ -78,7 +78,7 @@ public class TrivialCaller {
         }
         br.close();
     }
- 
+    
     
     /**
      * Remark: every alignment is used, including low MAPQ, secondary, and 
