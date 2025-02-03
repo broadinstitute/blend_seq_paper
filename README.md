@@ -2,21 +2,27 @@
 
 This repository contains the code used in the paper:
 
-- Blended Length Genome Sequencing (blend-seq): blending short and long reads to maximize variant discovery.
+* Blended Length Genome Sequencing (blend-seq):
+  Combining Short Reads with Low-Coverage Long Reads to Maximize Variant Discovery
 
-A copy of the manuscript can be found at **(insert link)**
+A copy of the preprint can be found [here](https://www.biorxiv.org/content/10.1101/2024.11.01.621515v2). Please refer to the paper for more details on the methods and results.
+
+## Data
+
+The GATK-SV VCF used in the paper for a short-read control can be found under `data`. It comes from the following paper:
+```
+Zan Koenig, Mary T Yohannes, Lethukuthula L Nkambule, and others. A harmonized public 
+resource of deeply sequenced diverse human genomes. Genome Research, 2024
+```
 
 ## Code Overview
 
-The code is split into `scripts` and `pipelines`.
+The code is split into `scripts` and `pipelines`. For documentation on what they do and how they were used, please see the Methods section of the manuscript.
 
-### Scripts
+## External Code
 
-The scripts included are:
-- `convert_large_indels.py`: Takes a BAM as input (first argument), and writes a new BAM (second argument) with deletions/insertions of length above a threshold (50) converted to `N`s.
-- `TrivialCaller.java`: Takes a BAM and produces a VCF by taking all deletions/insertions above a threshold (50) in each alignment and writing them as variants.
-
-### Pipelines
-
-The pipelines included are:
-- `VgCallSVs.wdl`: Takes in an `augmentation_bam` file to use to augment linear reference into graph reference using variants produced by running the `TrivialCaller.java`. Optionally takes in a `custom_augmentation_calls` VCF instead for specific variants to use to add paths to the reference graph. After it takes a fastq (or two for paired reads) and aligns them to the graph reference. Then it calls structural variants using `vg call` and outputs a VCF.
+The following external code was used in the paper:
+* [BenchmarkSVs](https://github.com/broadinstitute/palantir-workflows/blob/main/BenchmarkSVs/BenchmarkSVs.wdl) for benchmarking structural variants
+* [BenchmarkVCFs.wdl](https://github.com/broadinstitute/palantir-workflows/blob/main/BenchmarkVCFs/BenchmarkVCFs.wdl) for benchmarking small variants
+* [chop_reads](https://github.com/rickymagner/chop_reads) for chopping long read alignments into synthetic short read alignments
+* [CleanSVs.wdl](https://github.com/broadinstitute/palantir-workflows/blob/main/BenchmarkSVs/CleanSVs.wdl) for cleaning SV VCFs to normalize for downstream tools
