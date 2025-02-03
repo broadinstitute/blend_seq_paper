@@ -1,7 +1,8 @@
 version 1.0
 
 
-workflow GiraffeIndexPrime {
+#
+workflow GiraffeIndex {
     input {
         File input_vcf_gz
         String remote_id
@@ -12,8 +13,9 @@ workflow GiraffeIndexPrime {
         Int ram_size_gb
         Int disk_size_gb
     }
-
-    call GiraffeIndexPrimeImpl {
+    parameter_meta {
+    }
+    call GiraffeIndexImpl {
         input:
             input_vcf_gz = input_vcf_gz,
             remote_id = remote_id,
@@ -37,7 +39,7 @@ workflow GiraffeIndexPrime {
 # vg gbwt --gbz-format | 3m   | 1     | 19 G
 # vg minimizer         | 6m   | 13    | 36 G
 #
-task GiraffeIndexPrimeImpl {
+task GiraffeIndexImpl {
     input {
         File input_vcf_gz
         String remote_id
@@ -52,15 +54,15 @@ task GiraffeIndexPrimeImpl {
         remote_dir: "Containing the VCF to be indexed."
         max_sv_length: "Used for cleaning."
     }
-
+    
     String docker_dir = "/infogain"
     String work_dir = "/cromwell_root/infogain"
-
+    
     command <<<
         set -euxo pipefail
         mkdir -p ~{work_dir}
         cd ~{work_dir}
-
+        
         GSUTIL_UPLOAD_THRESHOLD="-o GSUtil:parallel_composite_upload_threshold=150M"
         GSUTIL_DELAY_S="600"
         TIME_COMMAND="/usr/bin/time --verbose"
@@ -68,11 +70,11 @@ task GiraffeIndexPrimeImpl {
         N_CORES_PER_SOCKET="$(lscpu | grep '^Core(s) per socket:' | awk '{print $NF}')"
         N_THREADS=$(( 2 * ${N_SOCKETS} * ${N_CORES_PER_SOCKET} ))
         VG_COMMAND="~{docker_dir}/vg"
-
+        
         # Cleaning the VCF and the reference
         gsutil -m cp ~{remote_chromosomes_dir}/'*.fa' .
         gunzip -c ~{input_vcf_gz} > input.vcf
-        java -cp ~{docker_dir} CleanVCFPrime input.vcf . ~{max_sv_length} 1 input-vg.vcf
+        java -cp ~{docker_dir} CleanVCFGiraffe input.vcf . ~{max_sv_length} 1 input-vg.vcf
         bgzip input-vg.vcf
         tabix input-vg.vcf.gz
         CHROMOSOMES=""
@@ -83,7 +85,7 @@ task GiraffeIndexPrimeImpl {
         cat ${CHROMOSOMES} > new_reference.fa
         rm -f ${CHROMOSOMES}
         samtools faidx new_reference.fa
-
+        
         # Indexing
         ${TIME_COMMAND} ${VG_COMMAND} construct --threads ${N_THREADS} --progress --handle-sv --alt-paths --reference new_reference.fa --vcf input-vg.vcf.gz > graph.vg
         mkdir ./vgtmp
@@ -96,7 +98,7 @@ task GiraffeIndexPrimeImpl {
         ${TIME_COMMAND} ${VG_COMMAND} gbwt --num-jobs ${N_THREADS} --temp-dir ./vgtmp --progress --xg-name graph.xg --graph-name graph.gbz --gbz-format graph.gbwt
         rm -rf ./vgtmp
         ${TIME_COMMAND} ${VG_COMMAND} minimizer --threads ${N_THREADS} --progress --distance-index graph.dist --output-name graph.min graph.gbz
-
+        
         # Uploading all indexes
         while : ; do
             TEST=$(gsutil ${GSUTIL_UPLOAD_THRESHOLD} -m cp graph.xg ~{remote_dir}/~{remote_id}.xg && echo 0 || echo 1)
@@ -153,7 +155,7 @@ task GiraffeIndexPrimeImpl {
             fi
         done
     >>>
-
+    
     output {
     }
     runtime {
