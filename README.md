@@ -5,7 +5,7 @@ This repository contains the code used in the paper:
 * Blended Length Genome Sequencing (blend-seq):
   Combining Short Reads with Low-Coverage Long Reads to Maximize Variant Discovery
 
-A copy of the preprint can be found [here](https://www.biorxiv.org/content/10.1101/2024.11.01.621515v2). Please refer to the paper for more details on the methods and results.
+A copy of the preprint can be found [here](https://www.biorxiv.org/content/10.1101/2024.11.01.621515v2). A summary will appear as a poster at AGBT 2025. Please refer to the paper for more details on the methods and results.
 
 ## Data
 
