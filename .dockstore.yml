@@ -1,0 +1,32 @@
+version: 1.2
+workflows:
+  - name: BenchmarkPhasing
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/PhasingVariants/BenchmarkPhasing.wdl
+  - name: HiPhase
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/PhasingVariants/HiPhase.wdl
+  - name: LongPhase
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/PhasingVariants/LongPhase.wdl
+  - name: PhaseVCF
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/PhasingVariants/PhaseVCF.wdl
+  - name: AnnotateNewSNPs
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/SmallVariants/AnnotateNewSNPs.wdl
+  - name: LowCoverageSniffles
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/StructuralVariantDiscovery/LowCoverageSniffles.wdl
+  - name: GiraffeIndex
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/StructuralVariantDiscovery/SVRegenotyping/GiraffeIndex.wdl
+  - name: GiraffeMap
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/StructuralVariantDiscovery/SVRegenotyping/GiraffeMap.wdl
+  - name: Paragraph
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/StructuralVariantDiscovery/SVRegenotyping/Paragraph.wdl
+  - name: VgCall
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/StructuralVariantDiscovery/SVRegenotyping/VgCall.wdl
